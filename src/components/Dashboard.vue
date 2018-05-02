@@ -17,7 +17,7 @@
         <div class="container-login100-form-btn">
           <button v-on:click="clear_value" class="login100-form-btn">Clear</button>
         </div>
-
+        <span class="login100-form-title">{{ result }}</span>
       </div>
     </div>
   </div>
@@ -62,7 +62,16 @@ export default {
         },
         // Result hook
         result (data) {
-          console.log(data)
+          console.log('Data' + JSON.stringify(data))
+          let arrayResult = data.data.newMessage.text.substring(2, data.data.newMessage.text.indexOf(']')).split(', ')
+          let msg = 'The probability that you draw: \n'
+          for (let i = 0; i < arrayResult.length; i++) {
+            if (parseFloat(arrayResult[i]) > 0.01) {
+              msg = msg + i + ' is ' + arrayResult[i] * 100 + ' percent\n'
+            }
+          }
+          console.log('Final result: ' + msg)
+          this.result = msg;
         }
       }
     }
@@ -76,7 +85,7 @@ export default {
       token: 'Loading token..',
       jwtToken: '',
       user: {},
-      timestamp: ''
+      result: ''
     }
   },
   created () {
