@@ -17,7 +17,9 @@
         <div class="container-login100-form-btn">
           <button v-on:click="clear_value" class="login100-form-btn">Clear</button>
         </div>
-        <span class="login100-form-title">{{ result }}</span>
+        <div class="container-login100-form-btn" v-for="result in results">
+          <span class="login100-form-title">{{ result }}</span>
+        </div>
       </div>
     </div>
   </div>
@@ -65,13 +67,14 @@ export default {
           console.log('Data' + JSON.stringify(data))
           let arrayResult = data.data.newMessage.text.substring(2, data.data.newMessage.text.indexOf(']')).split(', ')
           let msg = 'The probability that you draw: \n'
+          this.results.push(msg)
           for (let i = 0; i < arrayResult.length; i++) {
-            if (parseFloat(arrayResult[i]) > 0.01) {
-              msg = msg + i + ' is ' + arrayResult[i] * 100 + ' percent\n'
+            let resultFloat = parseFloat(arrayResult[i]).toPrecision(2)
+            if (resultFloat > 0.01) {
+              this.results.push(i + ' is ' + resultFloat * 100 + ' %\n')
             }
           }
-          console.log('Final result: ' + msg)
-          this.result = msg;
+          console.log('Final result: ' + JSON.stringify(this.results))
         }
       }
     }
@@ -85,13 +88,13 @@ export default {
       token: 'Loading token..',
       jwtToken: '',
       user: {},
-      result: ''
+      results: []
     }
   },
   created () {
     this.$cognitoAuth.getIdToken((err, jwtToken) => {
       if (err) {
-        console.log("Dashboard: Couldn't get the session:", err, err.stack)
+        console.log('Dashboard: couldn\'t get the session:', err, err.stack)
         return
       }
       console.log('JWT Token:' + jwtToken)
@@ -106,7 +109,9 @@ export default {
     mouse_move: function (event) {
       if (this.pixels.length === 0) {
         this.pixels = []
-        for (let i = 0; i < 28 * 28; i++) { this.pixels[i] = 0 }
+        for (let i = 0; i < 28 * 28; i++) {
+          this.pixels[i] = 0
+        }
       }
 
       if (event.buttons === 1) {
@@ -173,6 +178,7 @@ export default {
       for (var i = 0; i < 28 * 28; i++) {
         this.pixels[i] = 0
       }
+      this.results = []
     }
 
   }

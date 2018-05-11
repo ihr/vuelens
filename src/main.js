@@ -8,8 +8,7 @@ import cognitoAuth from './cognito'
 import AWSAppSyncClient from 'aws-appsync'
 import VueApollo from 'vue-apollo'
 
-
-console.log("Process args: " + JSON.stringify(process.env))
+console.log('Process args: ' + JSON.stringify(process.env))
 
 const client = new AWSAppSyncClient({
   url: process.env.GRAPHQL_ENDPOINT,
